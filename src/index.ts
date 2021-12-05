@@ -50,6 +50,6 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, options))
 connectDatabase();
 app.use(express.json());
 
-app.listen(4500, '192.168.43.18', () => {
+app.listen(4500, '172.20.10.10', () => {
   console.log('server started');
 });

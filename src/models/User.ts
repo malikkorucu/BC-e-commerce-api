@@ -45,7 +45,7 @@ const schema = new Schema<IUser>({
         required: true,
         type: String,
         select: false,
-        minlength: [6, 'Şifre en az 6 karakter olmalıdır'],
+        minlength: 6,
     },
 });
 

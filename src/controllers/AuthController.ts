@@ -1,10 +1,8 @@
-import { Controller, Post, Res, JsonController, Body, UploadedFile } from 'routing-controllers';
+import { Controller, Post, Res, JsonController, Body } from 'routing-controllers';
 import { Response } from 'express';
 import Container from 'typedi';
 import { AuthService } from '../services/AuthService';
 import IUser from '../interfaces/IUser';
-import { upload } from '../helpers/upload';
-import { ApiResult } from './ApiResult';
 
 @Controller('/Auth')
 @JsonController()
@@ -32,13 +30,4 @@ export class AuthController {
         console.log('user', user);
     }
 
-    @Post('/file')
-    public saveFile(@UploadedFile('test', { options: upload }) file: any, @Res() res: Response): any {
-        return res.json(new ApiResult({}));
-    }
-
-    @Post('/files')
-    public saveFiles(@UploadedFile('testfiles', { options: upload }) file: any, @Res() res: Response): any {
-        return res.json(new ApiResult({}));
-    }
 }
