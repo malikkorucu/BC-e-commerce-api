@@ -5,7 +5,6 @@ import { NextFunction, Request, Response } from 'express';
 @Middleware({ type: 'before' })
 export class AuthenticationMiddleware implements ExpressMiddlewareInterface {
   public use(request: Request, response: Response, next: NextFunction): void {
-    console.log(request);
     next();
   }
 }
