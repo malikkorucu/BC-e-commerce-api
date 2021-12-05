@@ -5,24 +5,23 @@ import { DbErrors } from '../helpers/dbErrors';
 @Middleware({ type: 'after' })
 export class CustomErrorHandler implements ExpressErrorMiddlewareInterface {
   public error(error: any, request: Request, response: Response, next: NextFunction): void {
-    const error_code = error.message.split(' ')[0];
+    const error_code = error?.message?.split(' ')[0];
     let message = '';
 
     switch (error_code) {
       case DbErrors.DUPLICATE_KEY:
-        message = 'Email adresi mevcut lütfen başka bir email adresi giriniz';
+        message = 'Telefon veya email alanı daha önceden kullanılmış';
         break;
 
       default:
-        const msg = error.message.split(':')[2].trim();
-        message = msg;
+        message = error.message;
         break;
     }
 
-    response.status(error.status || 500).json({
+    return next(response.status(error.status || 500).json({
       success: false,
       message,
       code: error.status || 500,
-    });
+    }));
   }
 }
