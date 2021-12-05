@@ -7,7 +7,7 @@ export class ApiResult<T> implements IApiResult {
     public data: T;
 
     constructor(data: T) {
-        this.code = 200;
+        this.code = 200 ;
         this.status = true;
         this.message = 'Operation was successed !';
         this.data = data;
