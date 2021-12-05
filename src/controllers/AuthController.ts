@@ -1,9 +1,10 @@
-import { Controller, Post, Res, JsonController, Body, Get, UploadedFile } from 'routing-controllers';
+import { Controller, Post, Res, JsonController, Body, UploadedFile } from 'routing-controllers';
 import { Response } from 'express';
 import Container from 'typedi';
 import { AuthService } from '../services/AuthService';
 import IUser from '../interfaces/IUser';
-import { fileUploadOptions } from '../helpers/upload';
+import { upload } from '../helpers/upload';
+import { ApiResult } from './ApiResult';
 
 @Controller('/Auth')
 @JsonController()
@@ -28,11 +29,16 @@ export class AuthController {
 
     @Post('/test')
     public async test(@Body() user: any, @Res() res: Response): Promise<any> {
-        return res.send('');
+        console.log('user', user);
+    }
+
+    @Post('/file')
+    public saveFile(@UploadedFile('test', { options: upload }) file: any, @Res() res: Response): any {
+        return res.json(new ApiResult({}));
     }
 
     @Post('/files')
-    public saveFile(@UploadedFile('test', { options: fileUploadOptions }) file: any): any {
-        console.log('files çalıştı');
+    public saveFiles(@UploadedFile('testfiles', { options: upload }) file: any, @Res() res: Response): any {
+        return res.json(new ApiResult({}));
     }
 }
