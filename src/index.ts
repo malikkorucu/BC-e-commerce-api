@@ -23,6 +23,7 @@ const app = createExpressServer({
   middlewares: [path.join(__dirname + '/middlewares/*.ts')],
 });
 
+// SWAGGER OPTIONS
 const options = {
   definition: {
     openapi: '3.0.0',
@@ -50,6 +51,6 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, options))
 connectDatabase();
 app.use(express.json());
 
-app.listen(4500, '172.20.10.10', () => {
+app.listen(4500, 'localhost', () => {
   console.log('server started');
 });

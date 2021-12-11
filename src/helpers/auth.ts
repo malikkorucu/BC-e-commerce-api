@@ -8,6 +8,7 @@ export const generateToken = (user) => {
   const payload = {
     id: user.id,
     name: user.name,
+    email: user.email
   };
 
   const token = jwt.sign(payload, SECRET_KEY, {
@@ -35,7 +36,7 @@ export const hashCode = (password: string) => {
 
 export const checkPasswordMatch = (p1: string, p2: string) => p1 === p2;
 
-export const checkEmail = (email) => {
+export const checkEmail = (email: string) => {
   const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(String(email).toLowerCase());
 };

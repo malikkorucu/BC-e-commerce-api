@@ -1,11 +1,10 @@
-import { Controller, Post, Res, JsonController, Body } from 'routing-controllers';
+import { Post, Res, JsonController, Body } from 'routing-controllers';
 import { Response } from 'express';
 import Container from 'typedi';
 import { AuthService } from '../services/AuthService';
 import IUser from '../interfaces/IUser';
 
-@Controller('/Auth')
-@JsonController()
+@JsonController('/Auth')
 export class AuthController {
     private service: AuthService;
     constructor() {
@@ -14,7 +13,6 @@ export class AuthController {
 
     @Post('/register')
     public async register(@Body() user: IUser, @Res() res: Response): Promise<Response> {
-        console.log(user);
         const result = await this.service.register(user);
         return res.json(result);
     }
