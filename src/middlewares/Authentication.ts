@@ -1,10 +1,38 @@
 import { ExpressMiddlewareInterface, Middleware } from 'routing-controllers';
-import { NextFunction, Request, Response } from 'express';
+import { CustomError } from '../helpers/Error';
+import jwt from 'jsonwebtoken';
 
-// burası global middleware
+// Authentication middleware
 @Middleware({ type: 'before' })
 export class AuthenticationMiddleware implements ExpressMiddlewareInterface {
-  public use(request: Request, response: Response, next: NextFunction): void {
+  public use(request: any, response: any, next: any): any {
+    response.header('Access-Control-Allow-Origin', '*');
+    response.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+
+    const nonSecurePaths = ['/api/Auth/login', '/api/Auth/register'];
+
+    const headers = request.headers;
+    const { authorization } = headers;
+
+    if (nonSecurePaths.includes(request.path) || !request.path.startsWith('/api/')) { return next(); }
+
+    if (!authorization) {
+      return next(new CustomError('Bu adrese ulaşmak için yetkiniz bulunmamaktadır.', 401));
+    } else {
+      const token = (authorization as string).split(' ')[1];
+      jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+        if (err) {
+          return next(
+            new CustomError(
+              'Bu adrese ulaşmak için yetkiniz bulunmamaktadır.',
+              401
+            )
+          );
+        }
+
+        request.user = decoded;
+      });
+    }
     next();
   }
 }

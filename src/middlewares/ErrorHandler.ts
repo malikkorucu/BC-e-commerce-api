@@ -5,12 +5,31 @@ import { DbErrors } from '../helpers/dbErrors';
 @Middleware({ type: 'after' })
 export class CustomErrorHandler implements ExpressErrorMiddlewareInterface {
   public error(error: any, request: Request, response: Response, next: NextFunction): void {
-    const error_code = error?.message?.split(' ')[0];
-    let message = '';
 
-    switch (error_code) {
+    const error_name = error.name !== 'MongoError' ? error.name : error.code;
+    let message = undefined;
+    let validation_fields = undefined;
+    let status = 500;
+
+    console.error('ERROR', error);
+
+    switch (error_name) {
       case DbErrors.DUPLICATE_KEY:
-        message = 'Telefon veya email alanı daha önceden kullanılmış';
+        validation_fields = [...Object.keys(error.keyPattern)];
+        message = 'Lütfen ilgili alanları tekrar kontrol ediniz.';
+        status = 400;
+        break;
+
+      case DbErrors.VALIDATION_ERROR:
+        const returnData = [];
+        const obj = error.errors;
+        for (const key in obj) {
+          if (obj.hasOwnProperty(key)) {
+            returnData.push({ name: key, message: obj[key].message });
+          }
+        }
+        validation_fields = returnData;
+        status = 400;
         break;
 
       default:
@@ -18,10 +37,11 @@ export class CustomErrorHandler implements ExpressErrorMiddlewareInterface {
         break;
     }
 
-    return next(response.status(error.status || 500).json({
+    return next(response.status(status).json({
       success: false,
       message,
-      code: error.status || 500,
+      validation_fields,
+      code: status,
     }));
   }
 }

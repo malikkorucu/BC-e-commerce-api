@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const connectDatabase = () => {
   mongoose
-    .connect('mongodb+srv://malikkorucu:19981907@malikkorucu-qyi9g.mongodb.net/beauty-center?retrywrites=true&w=majority', {
+    .connect(process.env.DBKEY, {
       useNewUrlParser: true,
       useFindAndModify: false,
       useCreateIndex: true,
@@ -11,7 +11,7 @@ const connectDatabase = () => {
     })
     .then(() => {
       console.log('mongo db baglantısı başarılı');
-    })
+    });
 };
 
 export default connectDatabase;
