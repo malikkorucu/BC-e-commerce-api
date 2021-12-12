@@ -8,7 +8,7 @@ export const generateToken = (user) => {
   const payload = {
     id: user.id,
     name: user.name,
-    email: user.email
+    email: user.email,
   };
 
   const token = jwt.sign(payload, SECRET_KEY, {
@@ -22,7 +22,7 @@ export const sendTokenToClient = (user: IUser) => {
   const { EXPIRES_IN } = process.env;
   const token = generateToken(user);
 
-  const expireDate = new Date(Date.now() + parseInt(EXPIRES_IN)).toUTCString();
+  const expireDate = new Date(Date.now() + parseInt(EXPIRES_IN, 10)).toUTCString();
 
   return { access_token: token, expireDate, expiresIn: EXPIRES_IN };
 };
@@ -41,11 +41,11 @@ export const checkEmail = (email: string) => {
   return re.test(String(email).toLowerCase());
 };
 
-export const checkPhoneNumber = (tel) => {
+export const checkPhoneNumber = (tel: string) => {
   const re = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
   return re.test(tel);
 };
 
-export const compareSyncPass = (pass, hashPass) => {
+export const compareSyncPass = (pass: string, hashPass: string) => {
   return bcrypt.compareSync(pass, hashPass);
 };

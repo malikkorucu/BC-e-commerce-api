@@ -1,4 +1,4 @@
-import { Res, JsonController, Get, Body, Post, Param } from 'routing-controllers';
+import { Res, JsonController, Get, Body, Post, Param, Delete, Put } from 'routing-controllers';
 import { Response } from 'express';
 import { ProductService } from '../services/ProductService';
 import Container from 'typedi';
@@ -27,6 +27,18 @@ export class ProductController {
     @Post('/product')
     public async addProduct(@Body() product: IProduct, @Res() res: Response): Promise<Response> {
         const data = await this.service.createProduct(product);
+        return res.json(data);
+    }
+
+    @Put('/product/:id')
+    public async updateProduct(@Body() product: IProduct, @Param('id') id: string, @Res() res: Response): Promise<Response> {
+        const data = await this.service.updateProduct(id, product);
+        return res.json(data);
+    }
+
+    @Delete('/product/:id')
+    public async deleteProduct(@Res() res: Response, @Param('id') id: string): Promise<Response> {
+        const data = await this.service.deleteProduct(id);
         return res.json(data);
     }
 }

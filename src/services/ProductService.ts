@@ -1,4 +1,3 @@
-
 import { Model } from 'mongoose';
 import IProduct from 'src/interfaces/IProduct';
 import { Service } from 'typedi';
@@ -27,7 +26,6 @@ export class ProductService {
     public async getProducts(): Promise<IApiResult> {
         try {
             const products = await this.Model.find({});
-            console.log(products);
             return new ApiResult(products);
         } catch (error) {
             throw error;
@@ -37,8 +35,26 @@ export class ProductService {
     public async getProduct(id: string): Promise<IApiResult> {
         try {
             const dbProduct = await this.Model.findOne({ _id: id });
-            console.log(dbProduct);
             return new ApiResult(dbProduct);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public async deleteProduct(id: string): Promise<IApiResult> {
+        try {
+            await this.Model.deleteOne({ _id: id });
+            return new ApiResult({ message: 'Product deleted' });
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public async updateProduct(id: string, product: IProduct): Promise<IApiResult> {
+        try {
+            const updatedProduct = await this.Model.findOneAndUpdate({ _id: id }, product, { new: true });
+            console.log(updatedProduct);
+            return new ApiResult(updatedProduct);
         } catch (error) {
             throw error;
         }

@@ -17,6 +17,12 @@ express().use(express.urlencoded({ extended: true }));
 express().use(cors());
 
 const app = createExpressServer({
+  cors: {
+    'origin': '*',
+    'methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    'preflightContinue': false,
+    'optionsSuccessStatus': 204,
+  },
   defaultErrorHandler: false,
   routePrefix: '/api',
   controllers: [path.join(__dirname + '/controllers/*.ts')],
