@@ -11,8 +11,6 @@ export class CustomErrorHandler implements ExpressErrorMiddlewareInterface {
     let validation_fields = undefined;
     let status = 500;
 
-    console.error('ERROR', error);
-
     switch (error_name) {
       case DbErrors.DUPLICATE_KEY:
         validation_fields = [...Object.keys(error.keyPattern)];
@@ -37,7 +35,7 @@ export class CustomErrorHandler implements ExpressErrorMiddlewareInterface {
         break;
     }
 
-    return next(response.status(status).json({
+    return next(response.json({
       success: false,
       message,
       validation_fields,

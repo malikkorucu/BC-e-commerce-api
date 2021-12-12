@@ -6,8 +6,6 @@ import jwt from 'jsonwebtoken';
 @Middleware({ type: 'before' })
 export class AuthenticationMiddleware implements ExpressMiddlewareInterface {
   public use(request: any, response: any, next: any): any {
-    response.header('Access-Control-Allow-Origin', '*');
-    response.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
 
     const nonSecurePaths = ['/api/Auth/login', '/api/Auth/register'];
 
@@ -32,6 +30,7 @@ export class AuthenticationMiddleware implements ExpressMiddlewareInterface {
 
         request.user = decoded;
       });
+
     }
     next();
   }
