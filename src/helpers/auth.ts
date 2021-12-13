@@ -22,7 +22,7 @@ export const sendTokenToClient = (user: IUser) => {
   const { EXPIRES_IN } = process.env;
   const token = generateToken(user);
 
-  const expireDate = new Date(Date.now() + parseInt(EXPIRES_IN, 10)).toUTCString();
+  const expireDate = new Date(Date.now() + parseInt(EXPIRES_IN)).toUTCString();
 
   return { access_token: token, expireDate, expiresIn: EXPIRES_IN };
 };

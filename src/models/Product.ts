@@ -29,7 +29,7 @@ const schema = new Schema<IProduct>({
     },
     product_image: {
         type: String,
-        required: [true, 'En az bir ürün fotoğrafı girilmesi zorunludur.'],
+        default: 'default_product_img.jpg',
     },
 });
 
