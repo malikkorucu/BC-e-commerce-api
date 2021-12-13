@@ -4,7 +4,7 @@ import IUser from '../interfaces/IUser';
 import { Service } from 'typedi';
 import IApiResult from '../interfaces/IApiResult';
 import { ApiResult } from '../controllers/ApiResult';
-import { checkPasswordMatch, checkPhoneNumber, compareSyncPass, hashCode, sendTokenToClient } from '../helpers/auth';
+import { checkPasswordMatch, compareSyncPass, hashCode, sendTokenToClient } from '../helpers/auth';
 import { CustomError } from '../helpers/Error';
 import { Model } from 'mongoose';
 
@@ -22,10 +22,6 @@ export class AuthService {
 
             if (!isPassMatched) {
                 throw new CustomError('parolalar eşleşmiyor', 400);
-            }
-
-            if (!checkPhoneNumber(user.phone)) {
-                throw new CustomError('Lütfen geçerli bir telefon numarası giriniz', 400);
             }
 
             const data = await this.Model.create({ ...user, password: hashCode(user.password) });

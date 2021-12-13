@@ -7,12 +7,83 @@
     <title>Document</title>
   </head>
   <body>
+    <form class="login-form">
+      <input type="email" placeholder="email" id="email" />
+      <input type="password" placeholder="parola" id="password" />
+      <button type="submit">GİRİŞ YAP</button>
+    </form>
+    <small style="color: red"></small>
+
     <button>TEST API</button>
+
+    <div class="products"></div>
+
     <script>
-      document.querySelector("button").addEventListener("click", async () => {
-        const res = await fetch("http://localhost:4500/api/Product/products");
+      const loginForm = document.querySelector(".login-form");
+      const productsContainer = document.querySelector(".products");
+
+      loginForm.addEventListener("submit", login);
+      document.addEventListener("DOMContentLoaded", getProducts);
+
+      async function login(e) {
+        e.preventDefault();
+        const { email, password } = loginForm.elements;
+        const data = { email: email.value, password: password.value };
+
+        const res = await fetch("http://localhost:4500/api/Auth/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+        const apiData = await res.json();
+
+        localStorage.setItem(
+          "access_token",
+          JSON.stringify(apiData.data.token.access_token)
+        );
+
+        console.log(JSON.parse(localStorage.getItem("access_token")));
+        console.log(apiData);
+      }
+
+      async function getProducts() {
+        const res = await fetch("http://localhost:4500/api/Product/products", {
+          method:'GET',
+          headers: {
+            Authorization:
+              "Bearer " + JSON.parse(localStorage.getItem("access_token")),
+            "Content-Type": "application/json",
+          },
+        });
         const data = await res.json();
-      });
+
+        productsContainer.innerHTML = "";
+        productsContainer.innerHTML += `
+          ${data.data
+            .map(
+              (item) =>
+                `<div>${item.title}<button onclick="deleteItem('${item._id}')">SİL</button></div>`
+            )
+            .join("")}
+        `;
+
+        console.log(data);
+      }
+
+      async function deleteItem(id) {
+        const res = await fetch(`http://localhost:4500/api/Product/product/${id}`, {
+          method: "DELETE",
+          headers:{
+            Authorization:'Bearer ' + JSON.parse(localStorage.getItem('access_token'))
+          }
+        });
+        const data = await res.json();
+
+        console.log(data);
+        getProducts();
+      }
     </script>
   </body>
 </html>
