@@ -24,13 +24,11 @@ export class UserController {
   @Get('/users/:id')
   @UseBefore(TestMiddleware)
   public getAll(@Param('id') id: number, @Req() request: any, @Res() response: any): Response {
-    console.log(id);
     return response.send('Hello response!');
   }
 
   @Get('/users')
   public getUsers(@QueryParam('limit') limit: number, @Req() request: any, @Res() response: any): any {
-    console.log(limit);
     return response.status(200).json({
       malik: 'aslşdfkjasdf',
     });
@@ -43,7 +41,6 @@ export class UserController {
 
   @Post('/users')
   public post(@Body() user: any): any {
-    console.log('asdşlfkjasdf', user);
     return user;
   }
 

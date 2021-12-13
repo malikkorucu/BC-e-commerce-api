@@ -12,8 +12,6 @@
       document.querySelector("button").addEventListener("click", async () => {
         const res = await fetch("http://localhost:4500/api/Product/products");
         const data = await res.json();
-
-        console.log(data);
       });
     </script>
   </body>

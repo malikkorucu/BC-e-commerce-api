@@ -53,7 +53,6 @@ export class ProductService {
     public async updateProduct(id: string, product: IProduct): Promise<IApiResult> {
         try {
             const updatedProduct = await this.Model.findOneAndUpdate({ _id: id }, product, { new: true });
-            console.log(updatedProduct);
             return new ApiResult(updatedProduct);
         } catch (error) {
             throw error;

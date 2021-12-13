@@ -22,10 +22,4 @@ export class AuthController {
         const result = await this.service.login(user);
         return res.json(result);
     }
-
-    @Post('/test')
-    public async test(@Body() user: any, @Res() res: Response): Promise<any> {
-        console.log('user', user);
-    }
-
 }
