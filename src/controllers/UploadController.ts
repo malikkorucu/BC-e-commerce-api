@@ -8,7 +8,7 @@ import IApiResult from '../interfaces/IApiResult';
 @JsonController()
 export class UploadController {
     @Post('/file')
-    public saveFile(@UploadedFile('test', { options: upload }) file: any, @Res() res: Response): Response<IApiResult> {
+    public saveFile(@UploadedFile('photo', { options: upload }) file: any, @Res() res: Response): Response<IApiResult> {
         return res.json(new ApiResult({}));
     }
 
