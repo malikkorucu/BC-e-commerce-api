@@ -1,11 +1,11 @@
-import { Get, Post, Res, JsonController, Body } from 'routing-controllers';
+import { Post, Res, JsonController, Body } from 'routing-controllers';
 import { Response } from 'express';
 import Container from 'typedi';
 import { AuthService } from '../services/AuthService';
 import IUser from '../interfaces/IUser';
 
-@JsonController('/Auth')
-export class AuthController {
+@JsonController('/Comment')
+export class CommentController {
     private service: AuthService;
     constructor() {
         this.service = Container.get(AuthService);
@@ -15,11 +15,6 @@ export class AuthController {
     public async register(@Body() user: IUser, @Res() res: Response): Promise<Response> {
         const result = await this.service.register(user);
         return res.json(result);
-    }
-
-    @Get('/yunus')
-    public async testFunction(@Res() res: Response): Promise<Response> {
-        return res.send('deneme deneme 123');
     }
 
     @Post('/login')

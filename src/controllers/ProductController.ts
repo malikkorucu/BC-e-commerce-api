@@ -26,6 +26,7 @@ export class ProductController {
 
     @Post('/product')
     public async addProduct(@Body() product: IProduct, @Res() res: Response): Promise<Response> {
+        console.log(product);
         const data = await this.service.createProduct(product);
         return res.json(data);
     }
