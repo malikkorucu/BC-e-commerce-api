@@ -17,9 +17,9 @@ export class AuthController {
         return res.json(result);
     }
 
-    @Get('/yunus')
+    @Get('/test')
     public async testFunction(@Res() res: Response): Promise<Response> {
-        return res.send('deneme deneme 123');
+        return res.send('this is test function');
     }
 
     @Post('/login')
