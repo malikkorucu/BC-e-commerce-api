@@ -1,8 +1,10 @@
-import { Res, JsonController, Get, Body, Post, Param, Delete, Put } from 'routing-controllers';
+import { Res, JsonController, Get, Body, Post, Param, Delete, Put, UseBefore } from 'routing-controllers';
 import { Response } from 'express';
 import { ProductService } from '../services/ProductService';
 import Container from 'typedi';
 import IProduct from 'src/interfaces/IProduct';
+import { upload } from '../../src/helpers/upload';
+// import { upload } from '../helpers/upload';
 
 @JsonController('/Product')
 export class ProductController {
@@ -25,8 +27,11 @@ export class ProductController {
     }
 
     @Post('/product')
+    @UseBefore(upload.fields([{ name: 'photo', maxCount: 1 }]), (req: any, res: any, next: any) => {
+        // req.body = { ...req.body, product_image: 'malik korucu' };
+        next();
+    })
     public async addProduct(@Body() product: IProduct, @Res() res: Response): Promise<Response> {
-        console.log(product);
         const data = await this.service.createProduct(product);
         return res.json(data);
     }

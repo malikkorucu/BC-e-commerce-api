@@ -7,6 +7,7 @@ import path from 'path';
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from './swagger.json';
 import cors from 'cors';
+import { json } from 'body-parser';
 
 dotenv.config({
   path: './config.env',
@@ -56,6 +57,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, options))
 // fonksiyonunun aldığı obje parametresi bütün controllerları tek satırda init ediyor.
 connectDatabase();
 app.use(express.json());
+app.use(json());
 
 app.listen(4500, 'localhost', () => {
   console.log('server started');
