@@ -31,6 +31,10 @@ const schema = new Schema<IProduct>({
         type: String,
         default: 'default_product_img.jpg',
     },
+    is_favorite: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 export const ProductModel = model<IProduct>('Product', schema);

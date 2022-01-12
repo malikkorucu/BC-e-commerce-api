@@ -59,6 +59,6 @@ connectDatabase();
 app.use(express.json());
 app.use(json());
 
-app.listen(4500, 'localhost', () => {
+app.listen(4500, () => {
   console.log('server started');
 });

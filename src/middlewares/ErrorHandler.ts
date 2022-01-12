@@ -36,7 +36,7 @@ export class CustomErrorHandler implements ExpressErrorMiddlewareInterface {
     }
 
     return next(response.json({
-      success: false,
+      status: false,
       message,
       validation_fields,
       code: status,

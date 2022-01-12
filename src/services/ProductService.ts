@@ -4,6 +4,7 @@ import { Service } from 'typedi';
 import { ProductModel } from '../models/Product';
 import IApiResult from '../interfaces/IApiResult';
 import { ApiResult } from '../controllers/ApiResult';
+import IUser from '../interfaces/IUser';
 
 @Service()
 export class ProductService {
@@ -23,9 +24,78 @@ export class ProductService {
         }
     }
 
-    public async getProducts(): Promise<IApiResult> {
+    public async getProducts(user: IUser): Promise<IApiResult> {
         try {
-            const products = await this.Model.find({});
+            const products = await this.Model.aggregate([
+                {
+                    $lookup: {
+                        from: 'favorites',
+                        as: 'is_favorite',
+                        let: { 'product_id': '$_id' },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $and: [
+                                            { $eq: ['$$product_id', '$product'] },
+                                            { $eq: ['$user_id', user.id] },
+                                        ],
+                                    },
+                                },
+                            },
+                        ],
+                    },
+                },
+                {
+                    $addFields: {
+                        is_favorite: { $cond: [{ $eq: [{ $size: '$is_favorite' }, 0] }, false, true] },
+                    },
+                },
+
+                // {
+                //     $group: {
+                //         _id: '$_id',
+                //         is_favorite: {
+                //                 $cond: [
+                //                     { $eq: [{ $size: '$is_favorite' }, 0] },
+                //                     { is_favorite: false },
+                //                     { is_favorite: true },
+                //                 ],
+                //         },
+                //     },
+                // },
+                // {
+                //     $replaceRoot: { newRoot: { $mergeObjects: [{ $arrayElemAt: ['$is_favorite', 0] }, '$$ROOT'] } },
+                // },
+                // {
+                //     $unwind: {
+                //         path: '$is_favorite',
+                //     },
+                // },
+                // {
+
+                //     $group:
+                //     {
+                //         _id: '$_id',
+                //         is_favorite: {
+                //             $cond: [
+                //                 { $eq: [{ $size: '$is_favorite' }, 0] },
+                //                 { is_favorite: false },
+                //                 { is_favorite: true },
+                //             ],
+                //         },
+                //     },
+                // },
+                // {
+                //     $group: {
+                //         _id: '$_id',
+                //         is_favorite: { $first: '$is_favorite' },
+                //     },
+                // },
+                // {
+                //     '$project': { 'is_favorite': 0 },
+                // },
+            ]);
             return new ApiResult(products);
         } catch (error) {
             throw error;

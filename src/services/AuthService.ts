@@ -34,16 +34,20 @@ export class AuthService {
     }
 
     public async login(user: IUser): Promise<IApiResult> {
-        const dbUser = await this.Model.findOne({ email: user.email }).select('+password');
+        try {
+            const dbUser = await this.Model.findOne({ email: user.email }).select('+password');
 
-        if (!dbUser) {
-            throw new CustomError('Böyle bir kullanıcı bulunmamaktadır', 401);
-        } else {
-            if (!compareSyncPass(user.password, dbUser.password)) {
-                throw new CustomError('Lütfen parolanızı kontrol ediniz', 400);
+            if (!dbUser) {
+                throw new CustomError('Böyle bir kullanıcı bulunmamaktadır', 401);
+            } else {
+                if (!compareSyncPass(user.password, dbUser.password)) {
+                    throw new CustomError('Lütfen parolanızı kontrol ediniz', 400);
+                }
             }
-        }
 
-        return new ApiResult({ user: dbUser, token: sendTokenToClient(dbUser) });
+            return new ApiResult({ user: dbUser, token: sendTokenToClient(dbUser) });
+        } catch (error) {
+            throw error;
+        }
     }
 }
