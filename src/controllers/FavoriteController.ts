@@ -13,7 +13,7 @@ export class AuthController {
 
     @Post('/favorite')
     public async addToFavorites(@Body() favoriteProduct: IFavorite, @Res() res: Response, @Req() req: any): Promise<Response> {
-        const result = await this.service.create(favoriteProduct, req.user);
+         const result = await this.service.create(favoriteProduct, req.user);
         return res.json(result);
     }
 

@@ -9,7 +9,7 @@ import { CustomError } from '../helpers/Error';
 
 @Service()
 export class FavoriteService {
-  protected Model: Model<IFavorite>;
+  protected Model: Model<any>;
 
   constructor() {
     this.Model = FavoriteModel;
@@ -54,7 +54,8 @@ export class FavoriteService {
 
   public async delete(id: string): Promise<IApiResult> {
     try {
-      await this.Model.deleteOne({ _id: id });
+      if (!id) { throw new CustomError('Id is required', 400); }
+      await this.Model.findOneAndDelete({ product: id });
       return new ApiResult(undefined);
     } catch (error) {
       throw error;
