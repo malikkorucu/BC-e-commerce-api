@@ -2,7 +2,7 @@ import multer from 'multer';
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(undefined, 'src/upload');
+    cb(undefined, 'src/public');
   },
   filename: (req, file, cb) => {
     const extension = file.originalname.split('.')[file.originalname.split('.').length - 1]; // prettier-ignore

@@ -30,6 +30,8 @@ const app = createExpressServer({
   middlewares: [path.join(__dirname + '/middlewares/*.ts')],
 });
 
+app.use(express.static(__dirname + '/public'));
+
 // SWAGGER OPTIONS
 const options = {
   definition: {
