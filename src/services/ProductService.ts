@@ -24,7 +24,7 @@ export class ProductService {
         }
     }
 
-    public async getProducts(user: IUser, category_id?: string | number): Promise<IApiResult> {
+    public async getProducts(user: IUser): Promise<IApiResult> {
         try {
             const products = await this.Model.aggregate([
                 {
