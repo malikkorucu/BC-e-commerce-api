@@ -1,4 +1,4 @@
-import { Res, Req, JsonController, Get, Body, Post, Param, Delete, Put, UseBefore } from 'routing-controllers';
+import { Res, Req, JsonController, Get, Body, Post, Param, Delete, Put, UseBefore, QueryParams } from 'routing-controllers';
 import { Response } from 'express';
 import { ProductService } from '../services/ProductService';
 import Container from 'typedi';
@@ -14,8 +14,10 @@ export class ProductController {
     }
 
     @Get('/products')
-    public async getProducts(@Res() res: Response, @Req() req: any): Promise<Response> {
-        const data = await this.service.getProducts(req.user);
+    public async getProducts(@Res() res: Response, @Req() req: any, @QueryParams() params: any): Promise<Response> {
+        const {category_id} = params;
+
+        const data = await this.service.getProducts(req.user , category_id);
         return res.json(data);
     }
 
@@ -26,7 +28,7 @@ export class ProductController {
     }
 
     @Post('/product')
-    @UseBefore(upload.fields([{ name: 'photo', maxCount: 5 }]))
+    @UseBefore(upload.fields([{ name: 'image', maxCount: 5 }]))
     public async addProduct(@Body() product: IProduct, @Res() res: Response): Promise<Response> {
         const data = await this.service.createProduct(product);
         return res.json(data);

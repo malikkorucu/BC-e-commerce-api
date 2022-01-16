@@ -6,4 +6,6 @@ export default interface IProduct {
     price_with_discount?: number;
     product_image: string;
     image_file?: FormData;
+    category_id: string;
+    category_name: string;
 }

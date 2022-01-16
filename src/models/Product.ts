@@ -1,4 +1,4 @@
-import { model, Schema } from 'mongoose';
+import mongoose, { model, Schema } from 'mongoose';
 import IProduct from '../interfaces/IProduct';
 
 const base = {
@@ -27,13 +27,16 @@ const schema = new Schema<IProduct>({
         type: Number,
         required: [true, 'Ürün fiyatı zorunlu bir alandır.'],
     },
-    product_image: {
+    image: {
         type: String,
         default: 'default_product_img.jpg',
     },
     is_favorite: {
         type: Boolean,
         default: false,
+    },
+    category: {
+        type: mongoose.Schema.Types.ObjectId,
     },
 });
 
