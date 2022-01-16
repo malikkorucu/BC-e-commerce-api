@@ -8,7 +8,7 @@ const storage = multer.diskStorage({
     const extension = file.originalname.split('.')[file.originalname.split('.').length - 1]; // prettier-ignore
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
     const file_name = file.fieldname + '-' + uniqueSuffix + `.${extension}`;
-    req.body = { ...req.body, product_image: file_name };
+    req.body = { ...req.body, image: file_name };
     cb(undefined, file.fieldname + '-' + uniqueSuffix + `.${extension}`);
   },
 });
