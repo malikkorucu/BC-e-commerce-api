@@ -24,7 +24,7 @@ export class ProductService {
         }
     }
 
-    public async getProducts(user: IUser): Promise<IApiResult> {
+    public async getProducts(user: IUser, category_id?: string | number): Promise<IApiResult> {
         try {
             const products = await this.Model.aggregate([
                 {
@@ -51,6 +51,40 @@ export class ProductService {
                         is_favorite: { $cond: [{ $eq: [{ $size: '$is_favorite' }, 0] }, false, true] },
                     },
                 },
+            ]);
+            return new ApiResult(products);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public async getProduct(id: string): Promise<IApiResult> {
+        try {
+            const dbProduct = await this.Model.findOne({ _id: id });
+            return new ApiResult(dbProduct);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public async deleteProduct(id: string): Promise<IApiResult> {
+        try {
+            await this.Model.deleteOne({ _id: id });
+            return new ApiResult({ message: 'Product deleted' });
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public async updateProduct(id: string, product: IProduct): Promise<IApiResult> {
+        try {
+            const updatedProduct = await this.Model.findOneAndUpdate({ _id: id }, product, { new: true });
+            return new ApiResult(updatedProduct);
+        } catch (error) {
+            throw error;
+        }
+    }
+}
 
                 // {
                 //     $group: {
@@ -95,37 +129,3 @@ export class ProductService {
                 // {
                 //     '$project': { 'is_favorite': 0 },
                 // },
-            ]);
-            return new ApiResult(products);
-        } catch (error) {
-            throw error;
-        }
-    }
-
-    public async getProduct(id: string): Promise<IApiResult> {
-        try {
-            const dbProduct = await this.Model.findOne({ _id: id });
-            return new ApiResult(dbProduct);
-        } catch (error) {
-            throw error;
-        }
-    }
-
-    public async deleteProduct(id: string): Promise<IApiResult> {
-        try {
-            await this.Model.deleteOne({ _id: id });
-            return new ApiResult({ message: 'Product deleted' });
-        } catch (error) {
-            throw error;
-        }
-    }
-
-    public async updateProduct(id: string, product: IProduct): Promise<IApiResult> {
-        try {
-            const updatedProduct = await this.Model.findOneAndUpdate({ _id: id }, product, { new: true });
-            return new ApiResult(updatedProduct);
-        } catch (error) {
-            throw error;
-        }
-    }
-}
