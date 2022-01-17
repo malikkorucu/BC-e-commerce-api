@@ -78,9 +78,9 @@ export class ProductService {
 
     public async getProductsByCategory(): Promise<IApiResult> {
         try {
-            const result = await this.Model.aggregate([
+            const query = [
                 {
-                    '$group': { '_id': '$category', 'data': { '$first': '$$ROOT' } },
+                    '$group': { '_id': '$category', 'data': { '$push': '$$ROOT' } },
                 },
                 {
                     '$project': {
@@ -91,14 +91,39 @@ export class ProductService {
                 },
                 {
                     $lookup: {
-                        from: 'products',
+                        from: 'categories',
                         localField: 'category',
                         foreignField: '_id',
-                        as: 'malik',
+                        as: 'category',
                     },
                 },
-            ]);
+                {
+                    $unwind: {
+                        path: '$category',
+                    },
+                },
+                {
+                    $project: {
+                        category: {
+                            _id: '$category._id',
+                            title: '$category.title',
+                            image: '$category.image',
+                            text: '$category.text',
+                        },
+                        products: 1,
+                    },
+                },
+                {
+                    $limit: 10,
+                },
+                {
+                    $sort: {
+                        category: 1,
+                    },
+                },
+            ];
 
+            const result = await this.Model.aggregate(query);
             return new ApiResult(result);
         } catch (error) {
             throw error;
@@ -132,47 +157,3 @@ export class ProductService {
         }
     }
 }
-
-                // {
-                //     $group: {
-                //         _id: '$_id',
-                //         is_favorite: {
-                //                 $cond: [
-                //                     { $eq: [{ $size: '$is_favorite' }, 0] },
-                //                     { is_favorite: false },
-                //                     { is_favorite: true },
-                //                 ],
-                //         },
-                //     },
-                // },
-                // {
-                //     $replaceRoot: { newRoot: { $mergeObjects: [{ $arrayElemAt: ['$is_favorite', 0] }, '$$ROOT'] } },
-                // },
-                // {
-                //     $unwind: {
-                //         path: '$is_favorite',
-                //     },
-                // },
-                // {
-
-                //     $group:
-                //     {
-                //         _id: '$_id',
-                //         is_favorite: {
-                //             $cond: [
-                //                 { $eq: [{ $size: '$is_favorite' }, 0] },
-                //                 { is_favorite: false },
-                //                 { is_favorite: true },
-                //             ],
-                //         },
-                //     },
-                // },
-                // {
-                //     $group: {
-                //         _id: '$_id',
-                //         is_favorite: { $first: '$is_favorite' },
-                //     },
-                // },
-                // {
-                //     '$project': { 'is_favorite': 0 },
-                // },

@@ -37,6 +37,7 @@ const schema = new Schema<IProduct>({
     },
     category: {
         type: mongoose.Schema.Types.ObjectId,
+        required: true,
     },
 },
     {
