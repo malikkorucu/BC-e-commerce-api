@@ -4,9 +4,10 @@ import Container from 'typedi';
 import { CategoryService } from '../../src/services/CategoryService';
 import ICategory from '../../src/interfaces/ICategory';
 import { upload } from '../../src/helpers/upload';
+import { ObjectId } from 'mongoose';
 
 interface IAddProduct {
-    product_id: string;
+    product_id: ObjectId;
     category_id: string;
 }
 

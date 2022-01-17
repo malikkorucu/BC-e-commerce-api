@@ -38,6 +38,14 @@ const schema = new Schema<IProduct>({
     category: {
         type: mongoose.Schema.Types.ObjectId,
     },
-});
+},
+    {
+        timestamps: true,
+        versionKey: false,
+        autoIndex: true,
+    }
+);
+
+schema.index({ title: 'text', description: 'text' });
 
 export const ProductModel = model<IProduct>('Product', schema);
