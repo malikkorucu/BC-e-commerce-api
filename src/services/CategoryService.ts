@@ -1,4 +1,4 @@
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 // import { CustomError } from 'src/helpers/Error';
 import { CategoryModel } from '../../src/models/Category';
 import { Service } from 'typedi';
@@ -32,7 +32,7 @@ export class CategoryService {
         }
     }
 
-    public async addProductToCategory(product: string, category_id: string): Promise<IApiResult> {
+    public async addProductToCategory(product: ObjectId, category_id: string): Promise<IApiResult> {
         try {
             const result = await this.Model.updateOne({ _id: category_id }, {
                 $push: {

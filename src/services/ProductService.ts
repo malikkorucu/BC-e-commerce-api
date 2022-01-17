@@ -24,9 +24,9 @@ export class ProductService {
         }
     }
 
-    public async getProducts(user: IUser): Promise<IApiResult> {
+    public async getProducts(user: IUser, params?: any): Promise<IApiResult> {
         try {
-            const products = await this.Model.aggregate([
+            const query = [
                 {
                     $lookup: {
                         from: 'favorites',
@@ -51,8 +51,55 @@ export class ProductService {
                         is_favorite: { $cond: [{ $eq: [{ $size: '$is_favorite' }, 0] }, false, true] },
                     },
                 },
-            ]);
+            ] as any;
+
+            if (params.search) {
+                query.push({
+                    $match: {
+                        $or: [
+                            { title: { $regex: params.search, $options: 'i' } },
+                        ],
+                    },
+                });
+                // KELİME KELİME ALIYOR
+                // query.unshift({
+                //     $match: {
+                //         $text: { $search: params.search },
+                //     },
+                // });
+            }
+
+            const products = await this.Model.aggregate(query);
             return new ApiResult(products);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public async getProductsByCategory(): Promise<IApiResult> {
+        try {
+            const result = await this.Model.aggregate([
+                {
+                    '$group': { '_id': '$category', 'data': { '$first': '$$ROOT' } },
+                },
+                {
+                    '$project': {
+                        '_id': 0,
+                        'category': '$_id',
+                        'products': '$data',
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'products',
+                        localField: 'category',
+                        foreignField: '_id',
+                        as: 'malik',
+                    },
+                },
+            ]);
+
+            return new ApiResult(result);
         } catch (error) {
             throw error;
         }
