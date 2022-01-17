@@ -15,7 +15,13 @@ export class ProductController {
 
     @Get('/products')
     public async getProducts(@Res() res: Response, @Req() req: any, @QueryParams() params: any): Promise<Response> {
-        const data = await this.service.getProducts(req.user);
+        const data = await this.service.getProducts(req.user, params);
+        return res.json(data);
+    }
+
+    @Get('/productsByCategory')
+    public async getProductsByCategory(@Res() res: Response): Promise<Response> {
+        const data = await this.service.getProductsByCategory();
         return res.json(data);
     }
 
