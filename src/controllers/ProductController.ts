@@ -20,8 +20,8 @@ export class ProductController {
     }
 
     @Get('/productsByCategory')
-    public async getProductsByCategory(@Res() res: Response): Promise<Response> {
-        const data = await this.service.getProductsByCategory();
+    public async getProductsByCategory(@Res() res: Response, @Req() req: any): Promise<Response> {
+        const data = await this.service.getProductsByCategory(req.user);
         return res.json(data);
     }
 

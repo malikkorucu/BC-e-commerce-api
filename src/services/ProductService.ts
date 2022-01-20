@@ -26,109 +26,151 @@ export class ProductService {
 
     public async getProducts(user: IUser, params?: any): Promise<IApiResult> {
         try {
-            const query = [
-                {
-                    $lookup: {
-                        from: 'favorites',
-                        as: 'is_favorite',
-                        let: { 'product_id': '$_id' },
-                        pipeline: [
-                            {
-                                $match: {
-                                    $expr: {
-                                        $and: [
-                                            { $eq: ['$$product_id', '$product'] },
-                                            { $eq: ['$user_id', user.id] },
-                                        ],
-                                    },
-                                },
-                            },
-                        ],
-                    },
-                },
-                {
-                    $addFields: {
-                        is_favorite: { $cond: [{ $eq: [{ $size: '$is_favorite' }, 0] }, false, true] },
-                    },
-                },
-            ] as any;
+            // const query = [
+            //     {
+            //         $lookup: {
+            //             from: 'favorites',
+            //             as: 'is_favorite',
+            //             let: { 'product_id': '$_id' },
+            //             pipeline: [
+            //                 {
+            //                     $match: {
+            //                         $expr: {
+            //                             $and: [ // prettier-ignore
+            //                                 { $eq: ['$$product_id', '$product'] },
+            //                                 { $eq: ['$user_id', user.id] },
+            //                             ],
+            //                         },
+            //                     },
+            //                 },
+            //             ],
+            //         },
+            //     },
+            //     {
+            //         $addFields: {
+            //             is_favorite: { $cond: [{ $eq: [{ $size: '$is_favorite' }, 0] }, false, true] },
+            //         },
+            //     },
+            //     {
+            //         $match: {
+            //             $or: [
+            //                 { title: { $regex: params.search, $options: 'i' } },
+            //             ],
+            //         },
+            //     },
+            // ] as any;
 
-            if (params.search) {
-                query.push({
-                    $match: {
-                        $or: [
-                            { title: { $regex: params.search, $options: 'i' } },
-                        ],
-                    },
-                });
                 // KELİME KELİME ALIYOR
                 // query.unshift({
                 //     $match: {
                 //         $text: { $search: params.search },
                 //     },
                 // });
-            }
 
-            const products = await this.Model.aggregate(query);
+            const pipeline = [
+                {
+                    $match: {
+                        $expr: {
+                            $and: [ // prettier-ignore
+                                { $eq: ['$$product_id', '$product'] },
+                                { $eq: ['$user_id', user.id] },
+                            ],
+                        },
+                    },
+                },
+            ];
+
+            const products = await this.Model
+                .aggregate()
+                .lookup({ from: 'favorites', let: { 'product_id': '$_id' }, as: 'is_favorite', pipeline })
+                .addFields({ is_favorite: { $cond: [{ $eq: [{ $size: '$is_favorite' }, 0] }, false, true] } })
+                .match({ $or: [{ title: { $regex: params.search || '', $options: 'i' } }] });
+
             return new ApiResult(products);
         } catch (error) {
             throw error;
         }
     }
 
-    public async getProductsByCategory(): Promise<IApiResult> {
+    //#region GetProdcutsByCategory
+    public async getProductsByCategory(user: IUser): Promise<IApiResult> {
         try {
-            const query = [
+            // const query = [ // yalın mongo sorgusu
+            //     {
+            //         '$group': { '_id': '$category', 'data': { '$push': '$$ROOT' } },
+            //     },
+            //     {
+            //         '$project': {
+            //             '_id': 0,
+            //             'category': '$_id',
+            //             'products': '$data',
+            //         },
+            //     },
+            //     {
+            //         $lookup: {
+            //             from: 'categories',
+            //             localField: 'category',
+            //             foreignField: '_id',
+            //             as: 'category',
+            //         },
+            //     },
+            //     {
+            //         $unwind: {
+            //             path: '$category',
+            //         },
+            //     },
+            //     {
+            //         $project: {
+            //             category: {
+            //                 _id: '$category._id',
+            //                 title: '$category.title',
+            //                 image: '$category.image',
+            //                 text: '$category.text',
+            //             },
+            //             products: 1,
+            //         },
+            //     },
+            //     {
+            //         $limit: 10,
+            //     },
+            //     {
+            //         $sort: {
+            //             category: 1,
+            //         },
+            //     },
+            // ];
+
+            const pipeline = [
                 {
-                    '$group': { '_id': '$category', 'data': { '$push': '$$ROOT' } },
-                },
-                {
-                    '$project': {
-                        '_id': 0,
-                        'category': '$_id',
-                        'products': '$data',
-                    },
-                },
-                {
-                    $lookup: {
-                        from: 'categories',
-                        localField: 'category',
-                        foreignField: '_id',
-                        as: 'category',
-                    },
-                },
-                {
-                    $unwind: {
-                        path: '$category',
-                    },
-                },
-                {
-                    $project: {
-                        category: {
-                            _id: '$category._id',
-                            title: '$category.title',
-                            image: '$category.image',
-                            text: '$category.text',
+                    $match: {
+                        $expr: {
+                            $and: [ // prettier-ignore
+                                { $eq: ['$$product_id', '$product'] },
+                                { $eq: ['$user_id', user.id] },
+                            ],
                         },
-                        products: 1,
-                    },
-                },
-                {
-                    $limit: 10,
-                },
-                {
-                    $sort: {
-                        category: 1,
                     },
                 },
             ];
 
-            const result = await this.Model.aggregate(query);
+            const result = await this.Model
+                .aggregate()
+                .lookup({ from: 'favorites', let: { 'product_id': '$_id' }, as: 'is_favorite', pipeline })
+                .addFields({ is_favorite: { $cond: [{ $eq: [{ $size: '$is_favorite' }, 0] }, false, true] } })
+                .group({ _id: '$category', 'data': { '$push': '$$ROOT' } })
+                .project({ '_id': 0, 'category': '$_id', 'products': '$data' })
+                .lookup({ from: 'categories', localField: 'category', foreignField: '_id', as: 'category' })
+                .unwind({ path: '$category' })
+                .project({ 'category': { _id: '$category._id', title: '$category.title', image: '$category.image', text: '$category.text' }, products: 1 })
+                .limit(10)
+                .sort({ category: 1 });
+
             return new ApiResult(result);
         } catch (error) {
             throw error;
         }
     }
+    //#endregion
 
     public async getProduct(id: string): Promise<IApiResult> {
         try {
