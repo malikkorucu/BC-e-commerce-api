@@ -60,12 +60,12 @@ export class ProductService {
             //     },
             // ] as any;
 
-                // KELİME KELİME ALIYOR
-                // query.unshift({
-                //     $match: {
-                //         $text: { $search: params.search },
-                //     },
-                // });
+            // KELİME KELİME ALIYOR
+            // query.unshift({
+            //     $match: {
+            //         $text: { $search: params.search },
+            //     },
+            // });
 
             const pipeline = [
                 {
