@@ -1,9 +1,9 @@
 import { Post, Res, JsonController, Body, UseBefore, Get, Put } from 'routing-controllers';
 import { Response } from 'express';
 import Container from 'typedi';
-import { CategoryService } from '../../src/services/CategoryService';
-import ICategory from '../../src/interfaces/ICategory';
-import { upload } from '../../src/helpers/upload';
+import { CategoryService } from '../services/CategoryService';
+import ICategory from '../interfaces/ICategory';
+import { upload } from '../helpers/upload';
 import { ObjectId } from 'mongoose';
 
 interface IAddProduct {

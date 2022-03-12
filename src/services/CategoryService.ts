@@ -1,6 +1,6 @@
 import { Model, ObjectId } from 'mongoose';
 // import { CustomError } from 'src/helpers/Error';
-import { CategoryModel } from '../../src/models/Category';
+import { CategoryModel } from '../models/Category';
 import { Service } from 'typedi';
 import ICategory from '../interfaces/ICategory';
 import { ApiResult } from '../controllers/ApiResult';

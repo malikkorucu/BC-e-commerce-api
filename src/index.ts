@@ -28,8 +28,8 @@ const app = createExpressServer({
   },
   defaultErrorHandler: false,
   routePrefix: '/api',
-  controllers: [path.join(__dirname + '/controllers/*.ts')],
-  middlewares: [path.join(__dirname + '/middlewares/*.ts')],
+  controllers: [path.join(__dirname + '/controllers/*ts'), path.join(__dirname + '/controllers/*js')],
+  middlewares: [path.join(__dirname + '/middlewares/*.ts'), path.join(__dirname + '/controllers/*js')],
 });
 
 app.use(express.static(__dirname + '/public'));

@@ -2,8 +2,8 @@ import { Res, Req, JsonController, Get, Body, Post, Param, Delete, Put, UseBefor
 import { Response } from 'express';
 import { ProductService } from '../services/ProductService';
 import Container from 'typedi';
-import IProduct from 'src/interfaces/IProduct';
-import { upload } from '../../src/helpers/upload';
+import IProduct from '../interfaces/IProduct';
+import { upload } from '../helpers/upload';
 
 @JsonController('/Product')
 export class ProductController {
