@@ -9,6 +9,8 @@ import swaggerDocument from './swagger.json';
 import cors from 'cors';
 import { json } from 'body-parser';
 
+const PORT = process.env.port || 8080;
+
 dotenv.config({
   path: './config.env',
 });
@@ -61,6 +63,6 @@ connectDatabase();
 app.use(express.json());
 app.use(json());
 
-app.listen(8080, () => {
+app.listen(PORT, () => {
   console.log('server started');
 });
