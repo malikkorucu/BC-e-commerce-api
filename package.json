@@ -10,6 +10,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon src/index.ts "
   },
+  "engines": {
+    "node": "14.18.2"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/malikkorucu/node-js-starter-ts.git"
