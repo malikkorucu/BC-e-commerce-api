@@ -73,7 +73,7 @@ export class ProductService {
                         $expr: {
                             $and: [ // prettier-ignore
                                 { $eq: ['$$product_id', '$product'] },
-                                { $eq: ['$user_id', user.id] },
+                                { $eq: ['$user_id', user?.id] },
                             ],
                         },
                     },
