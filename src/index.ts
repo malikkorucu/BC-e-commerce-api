@@ -9,7 +9,7 @@ import swaggerDocument from './swagger.json';
 import cors from 'cors';
 import { json } from 'body-parser';
 
-const PORT = process.env.port || 8080;
+const PORT = process.env.PORT || 8080;
 
 dotenv.config({
   path: './config.env',
