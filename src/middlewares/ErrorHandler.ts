@@ -11,8 +11,14 @@ export class CustomErrorHandler implements ExpressErrorMiddlewareInterface {
     let validation_fields = undefined;
     let status = 500;
 
-    switch (error_name) {
+     switch (error_name) {
       case DbErrors.DUPLICATE_KEY:
+        validation_fields = [...Object.keys(error.keyPattern)];
+        message = 'Lütfen ilgili alanları tekrar kontrol ediniz.';
+        status = 400;
+        break;
+
+      case DbErrors.DUPLICATE_KEY_2:
         validation_fields = [...Object.keys(error.keyPattern)];
         message = 'Lütfen ilgili alanları tekrar kontrol ediniz.';
         status = 400;
