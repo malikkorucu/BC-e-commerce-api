@@ -52,9 +52,19 @@ export class FavoriteService {
     }
   }
 
+  public async deleteByProductId(productId: string): Promise<any> {
+    try {
+      await this.Model.deleteMany({ product: productId });
+    } catch (error) {
+      throw error;
+    }
+  }
+
   public async delete(id: string): Promise<IApiResult> {
     try {
-      if (!id) { throw new CustomError('Id is required', 400); }
+      if (!id) {
+        throw new CustomError('Id is required', 400);
+      }
       await this.Model.findOneAndDelete({ product: id });
       return new ApiResult(undefined);
     } catch (error) {

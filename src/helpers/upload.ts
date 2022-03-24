@@ -6,12 +6,13 @@ const storage = multer.diskStorage({
     console.log();
     cb(undefined, path.join(__dirname, '../public'));
   },
-  filename: (req, file, cb) => {
+  filename: (req: any, file, cb) => {
     const extension = file.originalname.split('.')[file.originalname.split('.').length - 1]; // prettier-ignore
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    const file_name = file.fieldname + '-' + uniqueSuffix + `.${extension}`;
+    const originalName = file.originalname.split('.')[0]; // prettier-ignore
+
+    const file_name = file.fieldname + originalName + '-' + req.user.email + `.${extension}`;
     req.body = { ...req.body, image: file_name };
-    cb(undefined, file.fieldname + '-' + uniqueSuffix + `.${extension}`);
+    cb(undefined, file_name);
   },
 });
 
