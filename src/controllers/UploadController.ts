@@ -17,4 +17,3 @@ export class UploadController {
         return res.json(new ApiResult({}));
     }
 }
-
