@@ -52,9 +52,13 @@ export class FavoriteService {
     }
   }
 
-  public async deleteByProductId(productId: string): Promise<any> {
+  public async deleteByProductId(productIds: Array<string>): Promise<any> {
     try {
-      await this.Model.deleteMany({ product: productId });
+      await this.Model.deleteMany({
+        _id: {
+          $in: productIds,
+        },
+      });
     } catch (error) {
       throw error;
     }

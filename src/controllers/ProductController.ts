@@ -44,9 +44,9 @@ export class ProductController {
         return res.json(data);
     }
 
-    @Delete('/product/:id')
-    public async deleteProduct(@Res() res: Response, @Param('id') id: string): Promise<Response> {
-        const data = await this.service.deleteProduct(id);
+    @Delete('/product')
+    public async deleteProduct(@Res() res: Response, @QueryParams() query: any): Promise<Response> {
+        const data = await this.service.deleteProduct(query.productIds);
         return res.json(data);
     }
 }

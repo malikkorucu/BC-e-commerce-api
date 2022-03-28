@@ -9,7 +9,7 @@ export class CustomErrorHandler implements ExpressErrorMiddlewareInterface {
     const error_name = error.name !== 'MongoError' ? error.name : error.code;
     let message = undefined;
     let validation_fields = undefined;
-    let status = 500;
+    let status = error.status || 500;
 
      switch (error_name) {
       case DbErrors.DUPLICATE_KEY:

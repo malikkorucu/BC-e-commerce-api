@@ -17,6 +17,7 @@ export class ProductService {
     this.Model = ProductModel;
   }
 
+  //#region CreateProduct
   public async createProduct(product: IProduct): Promise<IApiResult> {
     try {
       const createdProduct = await this.Model.create(product);
@@ -25,7 +26,9 @@ export class ProductService {
       throw error;
     }
   }
+  //#endregion
 
+  //#region GetProducts
   public async getProducts(user: IUser, params?: any): Promise<IApiResult> {
     try {
       // const query = [
@@ -104,56 +107,12 @@ export class ProductService {
       throw error;
     }
   }
+  //#endregion
 
   //#region GetProdcutsByCategory
   public async getProductsByCategory(user: IUser): Promise<IApiResult> {
     try {
-      // const query = [ // yalın mongo sorgusu
-      //     {
-      //         '$group': { '_id': '$category', 'data': { '$push': '$$ROOT' } },
-      //     },
-      //     {
-      //         '$project': {
-      //             '_id': 0,
-      //             'category': '$_id',
-      //             'products': '$data',
-      //         },
-      //     },
-      //     {
-      //         $lookup: {
-      //             from: 'categories',
-      //             localField: 'category',
-      //             foreignField: '_id',
-      //             as: 'category',
-      //         },
-      //     },
-      //     {
-      //         $unwind: {
-      //             path: '$category',
-      //         },
-      //     },
-      //     {
-      //         $project: {
-      //             category: {
-      //                 _id: '$category._id',
-      //                 title: '$category.title',
-      //                 image: '$category.image',
-      //                 text: '$category.text',
-      //             },
-      //             products: 1,
-      //         },
-      //     },
-      //     {
-      //         $limit: 10,
-      //     },
-      //     {
-      //         $sort: {
-      //             category: 1,
-      //         },
-      //     },
-      // ];
-
-      const pipeline = [
+      const equalsProductIdAndUser = [
         {
           $match: {
             $expr: {
@@ -172,7 +131,7 @@ export class ProductService {
           from: 'favorites',
           let: { product_id: '$_id' },
           as: 'is_favorite',
-          pipeline,
+          pipeline: equalsProductIdAndUser,
         })
         .addFields({
           is_favorite: {
@@ -207,6 +166,7 @@ export class ProductService {
   }
   //#endregion
 
+  //#region GetProduct
   public async getProduct(id: string): Promise<IApiResult> {
     try {
       const dbProduct = await this.Model.findOne({ _id: id });
@@ -215,17 +175,25 @@ export class ProductService {
       throw error;
     }
   }
+  //#endregion
 
-  public async deleteProduct(id: string): Promise<IApiResult> {
+  //#region DeleteProduct
+  public async deleteProduct(productIds: Array<any>): Promise<IApiResult> {
     try {
-      await this.Model.deleteOne({ _id: id });
-      await this.favoriteService.deleteByProductId(id);
+      await this.Model.deleteMany({
+        _id: {
+          $in: productIds,
+        },
+      });
+      await this.favoriteService.deleteByProductId(productIds);
       return new ApiResult({ message: 'Product deleted' });
     } catch (error) {
       throw error;
     }
   }
+  //#endregion
 
+  //#region UpdateProduct
   public async updateProduct(
     id: string,
     product: IProduct
@@ -241,4 +209,5 @@ export class ProductService {
       throw error;
     }
   }
+  //#endregion
 }
