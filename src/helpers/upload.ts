@@ -39,7 +39,14 @@ export const upload: Multer = multer({
         request.user.email +
         `.${extension}`;
 
-      request.body = { ...request.body, image: fileName };
+      const others = request.body.other_images || [];
+
+      if (file.fieldname === 'image') {
+        request.body = { ...request.body, image: fileName };
+      } else {
+        request.body = { ...request.body, other_images: [...others, fileName] };
+      }
+
       done(undefined, fileName);
     },
   }),

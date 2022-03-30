@@ -31,6 +31,10 @@ const schema = new Schema<IProduct>({
         type: String,
         default: 'default_product_img.jpg',
     },
+    other_images: {
+        type: [String],
+        default: [],
+    },
     is_favorite: {
         type: Boolean,
         default: false,
