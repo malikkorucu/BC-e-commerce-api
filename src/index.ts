@@ -12,7 +12,7 @@ import { json } from 'body-parser';
 const PORT = process.env.PORT || 8080;
 
 dotenv.config({
-  path: './config.env',
+  path: './.env',
 });
 
 express().use(express.json());
