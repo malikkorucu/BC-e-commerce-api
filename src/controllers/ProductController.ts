@@ -34,7 +34,6 @@ export class ProductController {
     @Post('/product')
     @UseBefore(upload.fields([{ name: 'image', maxCount: 5 }, { name: 'other_images', maxCount: 5 }]))
     public async addProduct(@Body() product: any, @Res() res: Response): Promise<Response> {
-        console.log("product",product)
         const data = await this.service.createProduct(product);
         return res.json(data);
     }
