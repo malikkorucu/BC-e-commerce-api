@@ -27,13 +27,13 @@ const schema = new Schema<IProduct>({
         type: Number,
         required: [true, 'Ürün fiyatı zorunlu bir alandır.'],
     },
-    image: {
-        type: String,
-        default: 'default_product_img.jpg',
-    },
     other_images: {
         type: [String],
         default: [],
+    },
+    image: {
+        type: String,
+        default: 'default_product_img.jpg',
     },
     is_favorite: {
         type: Boolean,
