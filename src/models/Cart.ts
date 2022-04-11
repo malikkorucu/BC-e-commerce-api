@@ -15,11 +15,13 @@ const schema = new Schema<ICart>({
         type: String,
         required: true,
     },
-    product: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'Product',
-    },
+    products: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            required: true,
+            ref: 'Product',
+        },
+    ],
 });
 
 export const CartModel = model<ICart>('Cart', schema);
