@@ -1,8 +1,6 @@
-import IProduct from './IProduct';
-
+import { ObjectId } from 'mongoose';
 export default interface ICart {
     _id?: string;
-    id?: string;
     user_id: string;
-    product: IProduct;
+    products: Array<ObjectId>;
 }
