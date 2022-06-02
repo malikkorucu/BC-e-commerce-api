@@ -7,7 +7,7 @@ import { upload } from '../helpers/upload';
 import { Db } from 'mongodb';
 import { CustomError } from './../helpers/Error';
 import { checkDataFields } from './../utility/checkDataFields';
-import { UserProperties } from '../../src/helpers/startDb';
+import { UserProperties } from '../helpers/startDb';
 
 @JsonController('/Product')
 export class ProductController {

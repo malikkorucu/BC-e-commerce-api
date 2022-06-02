@@ -88,7 +88,7 @@ export class ProductService extends MetaService<IProduct> {
           as: 'category',
         })
         .unwind({ path: '$category' });
-      //.project({
+      // .project({
       //  category: {
       //    _id: '$category._id',
       //    title: '$category.title',
@@ -96,9 +96,9 @@ export class ProductService extends MetaService<IProduct> {
       //    text: '$category.text',
       //  },
       //  products: 1,
-      //})
-      //.limit(10)
-      //.sort({ category: 1 });
+      // })
+      // .limit(10)
+      // .sort({ category: 1 });
 
       return new ApiResult(result);
     } catch (error) {

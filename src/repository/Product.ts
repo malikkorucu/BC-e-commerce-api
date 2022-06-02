@@ -1,4 +1,4 @@
-//import IUser from 'src/interfaces/IUser';
+// import IUser from 'src/interfaces/IUser';
 
 export const getProductsQuery = ({
   user,
@@ -97,4 +97,4 @@ export const getProductsQuery = ({
     },
   ];
 
-//export const isIncludesInFavorites = (user: IUser) => JSON.stringify();
+// export const isIncludesInFavorites = (user: IUser) => JSON.stringify();

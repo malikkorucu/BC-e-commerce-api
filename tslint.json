@@ -1,4 +1,5 @@
 {
+  "extends": "tslint:recommended",
   "rules": {
     "max-classes-per-file": false,
     "array-type": false,
