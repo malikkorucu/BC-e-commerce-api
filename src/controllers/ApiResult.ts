@@ -1,4 +1,4 @@
-import IApiResult from "../interfaces/IApiResult";
+import IApiResult from '../interfaces/IApiResult';
 
 export class ApiResult<T> implements IApiResult {
   public code?: number;
@@ -10,7 +10,7 @@ export class ApiResult<T> implements IApiResult {
   constructor(data: T, meta?: any) {
     this.code = 200;
     this.status = true;
-    this.message = "Operation was successed !";
+    this.message = 'Operation was successed !';
     this.data = data;
     this.meta = meta;
   }

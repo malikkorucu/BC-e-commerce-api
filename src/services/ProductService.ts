@@ -1,15 +1,15 @@
-import { Model } from "mongoose";
-import IProduct from "src/interfaces/IProduct";
-import Container, { Service } from "typedi";
-import { ProductModel } from "../models/Product";
-import IApiResult from "../interfaces/IApiResult";
-import { ApiResult } from "../controllers/ApiResult";
-import IUser from "../interfaces/IUser";
-import { FavoriteService } from "./FavoriteService";
-import IComment from "../interfaces/IComment";
-import { CommentService } from "./CommentService";
-import { getProductsQuery } from "../repository/Product";
-import MetaService from "../utility/MetaService";
+import { Model } from 'mongoose';
+import IProduct from 'src/interfaces/IProduct';
+import Container, { Service } from 'typedi';
+import { ProductModel } from '../models/Product';
+import IApiResult from '../interfaces/IApiResult';
+import { ApiResult } from '../controllers/ApiResult';
+import IUser from '../interfaces/IUser';
+import { FavoriteService } from './FavoriteService';
+import IComment from '../interfaces/IComment';
+import { CommentService } from './CommentService';
+import { getProductsQuery } from '../repository/Product';
+import MetaService from '../utility/MetaService';
 
 @Service()
 export class ProductService extends MetaService<IProduct> {
@@ -60,7 +60,7 @@ export class ProductService extends MetaService<IProduct> {
               $and: [
                 // prettier-ignore
                 { $eq: ['$$product_id', '$product'] },
-                { $eq: ["$user_id", user.id] },
+                { $eq: ['$user_id', user.id] },
               ],
             },
           },
@@ -69,31 +69,31 @@ export class ProductService extends MetaService<IProduct> {
 
       const result = await this.Model.aggregate()
         .lookup({
-          from: "favorites",
-          let: { product_id: "$_id" },
-          as: "is_favorite",
+          from: 'favorites',
+          let: { product_id: '$_id' },
+          as: 'is_favorite',
           pipeline: equalsProductIdAndUser,
         })
         .addFields({
           is_favorite: {
-            $cond: [{ $eq: [{ $size: "$is_favorite" }, 0] }, false, true],
+            $cond: [{ $eq: [{ $size: '$is_favorite' }, 0] }, false, true],
           },
         })
-        .group({ _id: "$category", data: { $push: "$$ROOT" } })
-        .project({ _id: 0, category: "$_id", products: "$data" })
+        .group({ _id: '$category', data: { $push: '$$ROOT' } })
+        .project({ _id: 0, category: '$_id', products: '$data' })
         .lookup({
-          from: "categories",
-          localField: "category",
-          foreignField: "_id",
-          as: "category",
+          from: 'categories',
+          localField: 'category',
+          foreignField: '_id',
+          as: 'category',
         })
-        .unwind({ path: "$category" });
+        .unwind({ path: '$category' });
       //.project({
       //  category: {
-      //    _id: "$category._id",
-      //    title: "$category.title",
-      //    image: "$category.image",
-      //    text: "$category.text",
+      //    _id: '$category._id',
+      //    title: '$category.title',
+      //    image: '$category.image',
+      //    text: '$category.text',
       //  },
       //  products: 1,
       //})
@@ -127,7 +127,7 @@ export class ProductService extends MetaService<IProduct> {
         },
       });
       await this.favoriteService.deleteByProductId(productIds);
-      return new ApiResult({ message: "Product deleted" });
+      return new ApiResult({ message: 'Product deleted' });
     } catch (error) {
       throw error;
     }
@@ -157,26 +157,10 @@ export class ProductService extends MetaService<IProduct> {
     try {
       this.commentService.createComment(comment);
 
-      return new ApiResult({ message: "Product deleted" });
+      return new ApiResult({ message: 'Product deleted' });
     } catch (error) {
       throw error;
     }
   }
 }
 //#endregion
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

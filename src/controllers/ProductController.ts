@@ -5,6 +5,9 @@ import Container from 'typedi';
 import IProduct from '../interfaces/IProduct';
 import { upload } from '../helpers/upload';
 import { Db } from 'mongodb';
+import { CustomError } from './../helpers/Error';
+import { checkDataFields } from './../utility/checkDataFields';
+import { UserProperties } from '../../src/helpers/startDb';
 
 @JsonController('/Product')
 export class ProductController {
@@ -49,34 +52,23 @@ export class ProductController {
     public async testProduct(@Res() res: Response, @Req() req: any): Promise<Response> {
         try {
             const db = req.db as Db;
-            const isCollectionExist = db.collection('asdf')
-            console.log(isCollectionExist)
-            //return res.json({ data: collections })
-            //const data = req.db.createCollection("users", {
-            //    validator: {
-            //        $jsonSchema: {
-            //            bsonType: "object",
-            //            required: ["phone"],
-            //            properties: {
-            //                phone: {
-            //                    bsonType: "string",
-            //                    description: "must be a string and required"
-            //                },
-            //                email: {
-            //                    bsonType: "string",
-            //                    pattern: "@mongodb/.com$",
-            //                    description: "must be a string and match"
-            //                }
-            //            }
-            //        }
-            //    }
-            //})
-            return res.json({ data: JSON.stringify(isCollectionExist) })
+
+            const data = {
+                phone: '42323423',
+                email: 'asdflkjl',
+            };
+
+            const check = checkDataFields(data, UserProperties);
+
+            if (!check) {
+                throw new CustomError('test', 400);
+            }
+            const result = await db.collection('users').insertOne(data);
+
+            return res.json({ data: result });
         } catch (error) {
-            console.log('test test')
-            console.error(error)
+            throw error;
         }
-        return res.send('data')
     }
 
     @Delete('/product')

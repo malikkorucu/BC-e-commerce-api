@@ -16,13 +16,11 @@ export class CategoryService {
     }
 
     public async createCategory(category: ICategory): Promise<IApiResult> {
-        console.log(category)
         try {
             const isIncludesInDb = await this.Model.findOne({ title: category.title });
-            console.log(isIncludesInDb)
 
             if (isIncludesInDb) {
-                throw new CustomError('Bu alan veritabanında mevcut !', 400)
+                throw new CustomError('Bu alan veritabanında mevcut !', 400);
             }
 
             const result = await this.Model.create(category);

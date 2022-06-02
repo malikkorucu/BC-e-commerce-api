@@ -41,8 +41,8 @@ export class CategoryController {
     @Put('/updateCategory/:categoryId')
     @UseBefore(upload.single('image'))
     public async updateCategory(@Param('categoryId') category_id: string, @Body() category: ICategory, @Res() res: Response): Promise<Response> {
-        const result = await this.service.updateCategory(category_id, category)
-        return res.json(result)
+        const result = await this.service.updateCategory(category_id, category);
+        return res.json(result);
     }
 
     @Delete('/deleteCategory')

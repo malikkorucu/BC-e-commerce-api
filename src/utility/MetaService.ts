@@ -1,4 +1,4 @@
-import { Model } from "mongoose";
+import { Model } from 'mongoose';
 
 export default class MetaService<T> {
   public DbModel: Model<T>;
@@ -7,7 +7,7 @@ export default class MetaService<T> {
     this.DbModel = model;
   }
 
-  public async createMetaData(params: any) {
+  public async createMetaData(params: any): Promise<any> {
     const total_count = await this.DbModel.countDocuments();
 
     const pages = Math.ceil(total_count / Number(params.limit));

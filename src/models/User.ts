@@ -8,7 +8,6 @@ const base = {
     },
 };
 
-
 const schema = new Schema<IUser>({
     ...base,
     name: {

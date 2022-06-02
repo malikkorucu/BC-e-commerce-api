@@ -9,6 +9,7 @@ import swaggerDocument from './swagger.json';
 import cors from 'cors';
 import { json } from 'body-parser';
 import { MongoClient } from 'mongodb';
+import { startDb } from './helpers/startDb';
 
 const PORT = process.env.PORT || 8080;
 
@@ -19,7 +20,6 @@ dotenv.config({
 express().use(express.json());
 express().use(express.urlencoded({ extended: true }));
 express().use(cors());
-
 
 const app = createExpressServer({
   cors: {
@@ -36,17 +36,19 @@ const app = createExpressServer({
 
 app.use(express.static(__dirname + '/public'));
 
-export const mongodbClient = new MongoClient('mongodb://localhost:27017')
+export const mongodbClient = new MongoClient('mongodb://localhost:27017');
 
 const connect = async () => {
   try {
-    await mongodbClient.connect()
-    console.log('mongo ya bağlandı')
+    await mongodbClient.connect();
+    console.log('mongo ya bağlandı');
+    startDb(mongodbClient.db('beauty-center'));
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-}
-connect()
+};
+
+connect();
 // SWAGGER OPTIONS
 const options = {
   definition: {
@@ -73,7 +75,6 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, options))
 
 // fonksiyonunun aldığı obje parametresi bütün controllerları tek satırda init ediyor.
 connectDatabase();
-
 
 app.use(express.json());
 app.use(json());

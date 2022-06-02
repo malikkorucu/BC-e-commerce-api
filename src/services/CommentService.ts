@@ -15,7 +15,7 @@ export class CommentService {
 
     public async createComment(comment: IComment): Promise<IApiResult> {
         try {
-            const commentData = await this.Model.create(comment)
+            const commentData = await this.Model.create(comment);
             return new ApiResult({ message: 'Comment created', data: commentData });
         } catch (error) {
             throw error;

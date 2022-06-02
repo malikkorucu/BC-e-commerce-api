@@ -9,7 +9,8 @@
     "build": "npm start build",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon src/index.ts ",
-    "heroku-postbuild": "npm run build"
+    "heroku-postbuild": "npm run build",
+    "lint": "tslint --project tslint.json"
   },
   "engines": {
     "node": "14.18.2"
@@ -84,6 +85,7 @@
     "@types/jsonwebtoken": "^8.5.6",
     "@types/multer": "^1.4.5",
     "concurrently": "^6.2.0",
-    "nodemon": "^2.0.7"
+    "nodemon": "^2.0.7",
+    "swagger-autogen": "^2.21.2"
   }
 }
