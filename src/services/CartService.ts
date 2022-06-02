@@ -72,8 +72,14 @@ export class CartService {
     public async getAll(user: IUser): Promise<IApiResult> {
         try {
             const data = await this.Model.findOne({ user_id: user.id })
-                .populate('products')
-                .populate('user_id');
+                .populate({
+                    path: 'products',
+                    options: {
+                        sort: { createdAt: -1 },
+                        skip: 0,
+                        limit: 1,
+                    },
+                });
 
             return new ApiResult(data);
         } catch (error) {

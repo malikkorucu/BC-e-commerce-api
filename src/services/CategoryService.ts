@@ -5,6 +5,7 @@ import { Service } from 'typedi';
 import ICategory from '../interfaces/ICategory';
 import { ApiResult } from '../controllers/ApiResult';
 import IApiResult from '../interfaces/IApiResult';
+import { CustomError } from '../helpers/Error';
 
 @Service()
 export class CategoryService {
@@ -15,8 +16,34 @@ export class CategoryService {
     }
 
     public async createCategory(category: ICategory): Promise<IApiResult> {
+        console.log(category)
         try {
+            const isIncludesInDb = await this.Model.findOne({ title: category.title });
+            console.log(isIncludesInDb)
+
+            if (isIncludesInDb) {
+                throw new CustomError('Bu alan veritabanında mevcut !', 400)
+            }
+
             const result = await this.Model.create(category);
+            return new ApiResult(result);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public async deleteCategories(category_ids: Array<string>): Promise<IApiResult> {
+        try {
+            await this.Model.deleteMany({ _id: { $in: category_ids } });
+            return new ApiResult('Silme işlemi başarılı');
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public async updateCategory(categoryId: string, category: ICategory): Promise<IApiResult> {
+        try {
+            const result = await this.Model.findOneAndUpdate({ _id: categoryId }, category, { new: true }); // prettier-ignore
             return new ApiResult(result);
         } catch (error) {
             throw error;

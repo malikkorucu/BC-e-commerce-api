@@ -4,6 +4,7 @@ import { ProductService } from '../services/ProductService';
 import Container from 'typedi';
 import IProduct from '../interfaces/IProduct';
 import { upload } from '../helpers/upload';
+import { Db } from 'mongodb';
 
 @JsonController('/Product')
 export class ProductController {
@@ -42,6 +43,40 @@ export class ProductController {
     public async updateProduct(@Body() product: IProduct, @Param('id') id: string, @Res() res: Response): Promise<Response> {
         const data = await this.service.updateProduct(id, product);
         return res.json(data);
+    }
+
+    @Get('/testDb')
+    public async testProduct(@Res() res: Response, @Req() req: any): Promise<Response> {
+        try {
+            const db = req.db as Db;
+            const isCollectionExist = db.collection('asdf')
+            console.log(isCollectionExist)
+            //return res.json({ data: collections })
+            //const data = req.db.createCollection("users", {
+            //    validator: {
+            //        $jsonSchema: {
+            //            bsonType: "object",
+            //            required: ["phone"],
+            //            properties: {
+            //                phone: {
+            //                    bsonType: "string",
+            //                    description: "must be a string and required"
+            //                },
+            //                email: {
+            //                    bsonType: "string",
+            //                    pattern: "@mongodb/.com$",
+            //                    description: "must be a string and match"
+            //                }
+            //            }
+            //        }
+            //    }
+            //})
+            return res.json({ data: JSON.stringify(isCollectionExist) })
+        } catch (error) {
+            console.log('test test')
+            console.error(error)
+        }
+        return res.send('data')
     }
 
     @Delete('/product')
