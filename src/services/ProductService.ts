@@ -1,19 +1,26 @@
-import { Model } from 'mongoose';
-import IProduct from 'src/interfaces/IProduct';
-import Container, { Service } from 'typedi';
-import { ProductModel } from '../models/Product';
-import IApiResult from '../interfaces/IApiResult';
-import { ApiResult } from '../controllers/ApiResult';
-import IUser from '../interfaces/IUser';
-import { FavoriteService } from './FavoriteService';
+import { Model } from "mongoose";
+import IProduct from "src/interfaces/IProduct";
+import Container, { Service } from "typedi";
+import { ProductModel } from "../models/Product";
+import IApiResult from "../interfaces/IApiResult";
+import { ApiResult } from "../controllers/ApiResult";
+import IUser from "../interfaces/IUser";
+import { FavoriteService } from "./FavoriteService";
+import IComment from "../interfaces/IComment";
+import { CommentService } from "./CommentService";
+import { getProductsQuery } from "../repository/Product";
+import MetaService from "../utility/MetaService";
 
 @Service()
-export class ProductService {
+export class ProductService extends MetaService<IProduct> {
   protected Model: Model<IProduct>;
   private favoriteService: FavoriteService;
+  private commentService: CommentService;
 
   constructor() {
+    super(ProductModel);
     this.favoriteService = Container.get(FavoriteService);
+    this.commentService = Container.get(CommentService);
     this.Model = ProductModel;
   }
 
@@ -31,78 +38,12 @@ export class ProductService {
   //#region GetProducts
   public async getProducts(user: IUser, params?: any): Promise<IApiResult> {
     try {
-      // const query = [
-      //     {
-      //         $lookup: {
-      //             from: 'favorites',
-      //             as: 'is_favorite',
-      //             let: { 'product_id': '$_id' },
-      //             pipeline: [
-      //                 {
-      //                     $match: {
-      //                         $expr: {
-      //                             $and: [ // prettier-ignore
-      //                                 { $eq: ['$$product_id', '$product'] },
-      //                                 { $eq: ['$user_id', user.id] },
-      //                             ],
-      //                         },
-      //                     },
-      //                 },
-      //             ],
-      //         },
-      //     },
-      //     {
-      //         $addFields: {
-      //             is_favorite: { $cond: [{ $eq: [{ $size: '$is_favorite' }, 0] }, false, true] },
-      //         },
-      //     },
-      //     {
-      //         $match: {
-      //             $or: [
-      //                 { title: { $regex: params.search, $options: 'i' } },
-      //             ],
-      //         },
-      //     },
-      // ] as any;
+      const products = await this.Model.aggregate(getProductsQuery({ user, params }));
 
-      // KELİME KELİME ALIYOR
-      // query.unshift({
-      //     $match: {
-      //         $text: { $search: params.search },
-      //     },
-      // });
+      const data = products.length > 0 ? products[0].data : [];
+      const meta = products.length > 0 ? products[0].meta : {};
 
-      const pipeline = [
-        {
-          $match: {
-            $expr: {
-              $and: [
-                // prettier-ignore
-                { $eq: ['$$product_id', '$product'] },
-                { $eq: ['$user_id', user?.id] },
-              ],
-            },
-          },
-        },
-      ];
-
-      const products = await this.Model.aggregate()
-        .lookup({
-          from: 'favorites',
-          let: { product_id: '$_id' },
-          as: 'is_favorite',
-          pipeline,
-        })
-        .addFields({
-          is_favorite: {
-            $cond: [{ $eq: [{ $size: '$is_favorite' }, 0] }, false, true],
-          },
-        })
-        .match({
-          $or: [{ title: { $regex: params.search || '', $options: 'i' } }],
-        });
-
-      return new ApiResult(products);
+      return new ApiResult(data, meta);
     } catch (error) {
       throw error;
     }
@@ -119,7 +60,7 @@ export class ProductService {
               $and: [
                 // prettier-ignore
                 { $eq: ['$$product_id', '$product'] },
-                { $eq: ['$user_id', user.id] },
+                { $eq: ["$user_id", user.id] },
               ],
             },
           },
@@ -128,36 +69,36 @@ export class ProductService {
 
       const result = await this.Model.aggregate()
         .lookup({
-          from: 'favorites',
-          let: { product_id: '$_id' },
-          as: 'is_favorite',
+          from: "favorites",
+          let: { product_id: "$_id" },
+          as: "is_favorite",
           pipeline: equalsProductIdAndUser,
         })
         .addFields({
           is_favorite: {
-            $cond: [{ $eq: [{ $size: '$is_favorite' }, 0] }, false, true],
+            $cond: [{ $eq: [{ $size: "$is_favorite" }, 0] }, false, true],
           },
         })
-        .group({ _id: '$category', data: { $push: '$$ROOT' } })
-        .project({ _id: 0, category: '$_id', products: '$data' })
+        .group({ _id: "$category", data: { $push: "$$ROOT" } })
+        .project({ _id: 0, category: "$_id", products: "$data" })
         .lookup({
-          from: 'categories',
-          localField: 'category',
-          foreignField: '_id',
-          as: 'category',
+          from: "categories",
+          localField: "category",
+          foreignField: "_id",
+          as: "category",
         })
-        .unwind({ path: '$category' })
-        .project({
-          category: {
-            _id: '$category._id',
-            title: '$category.title',
-            image: '$category.image',
-            text: '$category.text',
-          },
-          products: 1,
-        })
-        .limit(10)
-        .sort({ category: 1 });
+        .unwind({ path: "$category" });
+      //.project({
+      //  category: {
+      //    _id: "$category._id",
+      //    title: "$category.title",
+      //    image: "$category.image",
+      //    text: "$category.text",
+      //  },
+      //  products: 1,
+      //})
+      //.limit(10)
+      //.sort({ category: 1 });
 
       return new ApiResult(result);
     } catch (error) {
@@ -186,7 +127,7 @@ export class ProductService {
         },
       });
       await this.favoriteService.deleteByProductId(productIds);
-      return new ApiResult({ message: 'Product deleted' });
+      return new ApiResult({ message: "Product deleted" });
     } catch (error) {
       throw error;
     }
@@ -210,4 +151,32 @@ export class ProductService {
     }
   }
   //#endregion
+
+  //#region AddComment
+  public async addCommentToProduct(comment: IComment): Promise<IApiResult> {
+    try {
+      this.commentService.createComment(comment);
+
+      return new ApiResult({ message: "Product deleted" });
+    } catch (error) {
+      throw error;
+    }
+  }
 }
+//#endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

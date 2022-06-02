@@ -27,4 +27,10 @@ export class AuthController {
         const result = await this.service.login(user);
         return res.json(result);
     }
+
+    @Get('/getUsers')
+    public async getUsers(@Res() res: Response): Promise<Response> {
+        const result = await this.service.getUsers();
+        return res.json(result);
+    }
 }

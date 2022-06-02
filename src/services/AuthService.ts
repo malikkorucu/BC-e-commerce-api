@@ -50,4 +50,13 @@ export class AuthService {
             throw error;
         }
     }
+
+    public async getUsers(): Promise<IApiResult> {
+        try {
+            const data = await this.Model.find();
+            return new ApiResult(data);
+        } catch (error) {
+            throw error;
+        }
+    }
 }

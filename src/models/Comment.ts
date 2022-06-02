@@ -14,6 +14,7 @@ const schema = new Schema<IComment>({
     rating: {
         required: [true, 'Ürün puanlamasını girmediniz.'],
         type: Number,
+        enum: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
     },
     content: {
         required: [true, 'Ürün içeriğini giriniz.'],
@@ -25,4 +26,4 @@ const schema = new Schema<IComment>({
     },
 });
 
-export const CommentModel = model<IComment>('Cart', schema);
+export const CommentModel = model<IComment>('Comment', schema);
