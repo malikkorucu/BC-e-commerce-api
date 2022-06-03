@@ -1,5 +1,3 @@
-// import IUser from 'src/interfaces/IUser';
-
 export const getProductsQuery = ({
   user,
   params = {
@@ -73,28 +71,26 @@ export const getProductsQuery = ({
         data: {
           $slice: [
             '$data',
-            Number(params.skip) || 0,
+            params.skip ? Number(params.skip) : 0,
             {
-              $ifNull: [Number(params.limit) || 5, '$total.createdAt'],
+              $ifNull: [params.limit ? Number(params.limit) : 10, '$total.createdAt'],
             },
           ],
         },
         meta: {
           total: '$total.createdAt',
           limit: {
-            $literal: Number(params.limit) || 5,
+            $literal: params.limit ? Number(params.limit) : 10,
           },
           page: {
-            $literal: Number(params.skip) / Number(params.limit) + 1,
+            $literal: (params.skip ? Number(params.skip) : 0 / params.limit ? Number(params.limit) : 10) + 1,
           },
           pages: {
             $ceil: {
-              $divide: ['$total.createdAt', Number(params.limit)],
+              $divide: ['$total.createdAt', params.limit ? Number(params.limit) : 10],
             },
           },
         },
       },
     },
   ];
-
-// export const isIncludesInFavorites = (user: IUser) => JSON.stringify();

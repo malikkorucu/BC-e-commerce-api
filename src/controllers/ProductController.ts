@@ -71,7 +71,7 @@ export class ProductController {
         }
     }
 
-    @Delete('/product')
+    @Delete('/products')
     public async deleteProduct(@Res() res: Response, @QueryParams() query: any): Promise<Response> {
         const data = await this.service.deleteProduct(query.productIds);
         return res.json(data);
