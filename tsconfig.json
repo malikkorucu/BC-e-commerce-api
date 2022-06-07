@@ -1,8 +1,12 @@
 {
+  "ts-node": {
+    "swc": true
+  },
   "compilerOptions": {
     "target": "es6",
     "module": "commonjs",
     "pretty": true,
+    "forceConsistentCasingInFileNames": true,
     "sourceMap": true,
     "outDir": "dist",
     "importHelpers": true,
