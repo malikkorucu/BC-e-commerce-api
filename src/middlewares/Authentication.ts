@@ -7,7 +7,7 @@ import jwt from 'jsonwebtoken';
 export class AuthenticationMiddleware implements ExpressMiddlewareInterface {
   public use(request: any, response: any, next: any): any {
 
-    const nonSecurePaths = ['/api/Auth/login', '/api/Auth/register', '/api/upload', '/api/Product/testDb'];
+    const nonSecurePaths = ['/api/Auth/login', '/api/Auth/register', '/api/upload', '/api/Product/products'];
 
     const headers = request.headers;
     const { authorization } = headers;
